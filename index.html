@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>DSA Explorer | Learn & Practice</title>
+    <title>DSA Explorer</title>
 
     <link rel="stylesheet" href="style.css">
 </head>
@@ -16,19 +16,12 @@
         <p>Learn. Visualize. Explore.</p>
     </header>
 
-    <!-- HOME PAGE -->
     <main id="homePage">
 
-        <h2>Explore Data Structures</h2>
-
-        <p class="home-description">
-            Learn data structures through interactive operations,
-            simple explanations, and fun quizzes!
-        </p>
+        <h2>Choose Your Data Structure</h2>
 
         <div class="card-container">
 
-            <!-- STACK CARD -->
             <div class="card stack-card">
                 <div class="icon">📚</div>
                 <h2>STACK</h2>
@@ -39,7 +32,6 @@
                 </button>
             </div>
 
-            <!-- QUEUE CARD -->
             <div class="card queue-card">
                 <div class="icon">🚶</div>
                 <h2>QUEUE</h2>
@@ -50,33 +42,10 @@
                 </button>
             </div>
 
-            <!-- LEARN MODE CARD -->
-            <div class="card learn-card">
-                <div class="icon">📖</div>
-                <h2>LEARN MODE</h2>
-                <p>Understand concepts, operations, and time complexity.</p>
-
-                <button onclick="openLearnMode()">
-                    Start Learning →
-                </button>
-            </div>
-
-            <!-- QUIZ MODE CARD -->
-            <div class="card quiz-card">
-                <div class="icon">🧠</div>
-                <h2>QUIZ MODE</h2>
-                <p>Test your knowledge with interactive MCQs.</p>
-
-                <button onclick="openQuizMode()">
-                    Start Quiz →
-                </button>
-            </div>
-
         </div>
 
     </main>
 
-    <!-- STACK AND QUEUE OPERATIONS -->
     <section id="operationPage" class="hidden">
 
         <button class="back-button" onclick="goHome()">
@@ -112,12 +81,8 @@
 
         <div class="visual-panel">
             <h3>✨ Visual Representation</h3>
-
             <div id="structureDisplay"></div>
-
-            <p id="statusMessage">
-                Choose an operation to begin!
-            </p>
+            <p id="statusMessage">Choose an operation to begin!</p>
         </div>
 
         <div class="history-panel">
@@ -128,236 +93,6 @@
         <button class="reset-button" onclick="resetStructure()">
             🔄 Reset Structure
         </button>
-
-    </section>
-
-    <!-- LEARN MODE -->
-    <section id="learnPage" class="hidden">
-
-        <button class="back-button" onclick="goHome()">
-            ← Back to Home
-        </button>
-
-        <h2 class="mode-title">📖 Learn Mode</h2>
-
-        <p class="mode-description">
-            Learn the basic concepts of Stack and Queue.
-        </p>
-
-        <div class="learning-container">
-
-            <article class="learning-card">
-                <h3>📚 1. What is a Stack?</h3>
-
-                <p>
-                    A Stack is a linear data structure that follows
-                    <strong>LIFO</strong> — Last In, First Out.
-                    The last element inserted is the first one removed.
-                </p>
-
-                <h4>Example</h4>
-                <p>
-                    Think of a stack of plates. You place a new plate
-                    on top and remove the top plate first.
-                </p>
-
-                <h4>Basic Operations</h4>
-                <ul>
-                    <li><strong>Push:</strong> Insert an element.</li>
-                    <li><strong>Pop:</strong> Remove the top element.</li>
-                    <li><strong>Peek:</strong> View the top element.</li>
-                    <li><strong>Is Empty:</strong> Check whether the Stack is empty.</li>
-                    <li><strong>Is Full:</strong> Check whether the Stack is full.</li>
-                </ul>
-            </article>
-
-            <article class="learning-card">
-                <h3>🚶 2. What is a Queue?</h3>
-
-                <p>
-                    A Queue is a linear data structure that follows
-                    <strong>FIFO</strong> — First In, First Out.
-                    The first element inserted is the first one removed.
-                </p>
-
-                <h4>Example</h4>
-                <p>
-                    Think of people standing in a line.
-                    The person who arrives first is served first.
-                </p>
-
-                <h4>Basic Operations</h4>
-                <ul>
-                    <li><strong>Enqueue:</strong> Insert an element at the rear.</li>
-                    <li><strong>Dequeue:</strong> Remove an element from the front.</li>
-                    <li><strong>Front:</strong> View the first element.</li>
-                    <li><strong>Is Empty:</strong> Check whether the Queue is empty.</li>
-                    <li><strong>Is Full:</strong> Check whether the Queue is full.</li>
-                </ul>
-            </article>
-
-            <article class="learning-card">
-                <h3>⚡ 3. Time Complexity</h3>
-
-                <p>
-                    Time complexity describes how the running time of
-                    an operation grows as the input size increases.
-                </p>
-
-                <div class="table-wrapper">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Operation</th>
-                                <th>Stack</th>
-                                <th>Queue</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                            <tr>
-                                <td>Insert</td>
-                                <td>Push — O(1)</td>
-                                <td>Enqueue — O(1)*</td>
-                            </tr>
-
-                            <tr>
-                                <td>Remove</td>
-                                <td>Pop — O(1)</td>
-                                <td>Dequeue — O(1)*</td>
-                            </tr>
-
-                            <tr>
-                                <td>View next element</td>
-                                <td>Peek — O(1)</td>
-                                <td>Front — O(1)</td>
-                            </tr>
-
-                            <tr>
-                                <td>Check size</td>
-                                <td>O(1)</td>
-                                <td>O(1)</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <p class="complexity-note">
-                    *These complexities assume a suitable Stack or Queue
-                    implementation. A simple array-based implementation
-                    may have different costs for some operations.
-                </p>
-            </article>
-
-            <article class="learning-card">
-                <h3>🔍 4. Stack vs Queue</h3>
-
-                <div class="table-wrapper">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Feature</th>
-                                <th>Stack</th>
-                                <th>Queue</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                            <tr>
-                                <td>Principle</td>
-                                <td>LIFO</td>
-                                <td>FIFO</td>
-                            </tr>
-
-                            <tr>
-                                <td>Insertion</td>
-                                <td>Top</td>
-                                <td>Rear</td>
-                            </tr>
-
-                            <tr>
-                                <td>Removal</td>
-                                <td>Top</td>
-                                <td>Front</td>
-                            </tr>
-
-                            <tr>
-                                <td>Example</td>
-                                <td>Stack of plates</td>
-                                <td>People in a line</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </article>
-
-        </div>
-
-        <button class="reset-button" onclick="openQuizMode()">
-            🧠 Test Your Knowledge →
-        </button>
-
-    </section>
-
-    <!-- QUIZ MODE -->
-    <section id="quizPage" class="hidden">
-
-        <button class="back-button" onclick="goHome()">
-            ← Back to Home
-        </button>
-
-        <h2 class="mode-title">🧠 DSA Quiz Mode</h2>
-
-        <p class="mode-description">
-            Answer the questions and test your DSA knowledge!
-        </p>
-
-        <div class="quiz-panel">
-
-            <div class="quiz-top">
-                <span id="questionCounter">Question 1 of 10</span>
-                <span id="currentScore">Score: 0</span>
-            </div>
-
-            <div class="progress-track">
-                <div id="quizProgress"></div>
-            </div>
-
-            <h3 id="questionText"></h3>
-
-            <div id="answerOptions"></div>
-
-            <p id="quizFeedback" aria-live="polite"></p>
-
-            <button
-                id="nextQuestionButton"
-                class="quiz-next-button hidden"
-                onclick="nextQuestion()"
-            >
-                Next Question →
-            </button>
-
-        </div>
-
-        <div id="quizResult" class="quiz-result hidden">
-
-            <div class="result-icon">🏆</div>
-
-            <h2>Quiz Completed!</h2>
-
-            <p id="finalScore"></p>
-
-            <p id="finalMessage"></p>
-
-            <button onclick="startQuiz()">
-                🔄 Try Again
-            </button>
-
-            <button onclick="goHome()">
-                🏠 Back to Home
-            </button>
-
-        </div>
 
     </section>
 
