@@ -1,359 +1,621 @@
-// Store the current data structure
+// ======================================
+// DSA EXPLORER
+// Stack + Queue + Learn Mode + Quiz Mode
+// ======================================
+
 let currentType = "";
 let stack = [];
 let queue = [];
 let history = [];
 
-// Open Stack or Queue
+// ======================================
+// PAGE NAVIGATION
+// ======================================
+
+function hideAllPages() {
+    document.getElementById("homePage").classList.add("hidden");
+    document.getElementById("operationPage").classList.add("hidden");
+    document.getElementById("learnPage").classList.add("hidden");
+    document.getElementById("quizPage").classList.add("hidden");
+}
+
+function goHome() {
+    hideAllPages();
+    document.getElementById("homePage").classList.remove("hidden");
+}
+
+function openLearnMode() {
+    hideAllPages();
+    document.getElementById("learnPage").classList.remove("hidden");
+}
+
+function openQuizMode() {
+    hideAllPages();
+    document.getElementById("quizPage").classList.remove("hidden");
+    startQuiz();
+}
+
+// ======================================
+// STACK AND QUEUE NAVIGATION
+// ======================================
+
 function openSection(type) {
+    hideAllPages();
 
     currentType = type;
-    history = [];
 
-    document.getElementById("homePage").classList.add("hidden");
     document.getElementById("operationPage").classList.remove("hidden");
 
-    if (type === "stack") {
-        document.getElementById("operationTitle").innerText = "🟣 Stack Operations";
-        document.getElementById("operationDescription").innerText =
-            "LIFO — Last In, First Out";
-    } else {
-        document.getElementById("operationTitle").innerText = "🔵 Queue Operations";
-        document.getElementById("operationDescription").innerText =
-            "FIFO — First In, First Out";
-    }
+    document.getElementById("operationTitle").textContent =
+        type === "stack" ? "📚 Stack Operations" : "🚶 Queue Operations";
+
+    document.getElementById("operationDescription").textContent =
+        type === "stack"
+            ? "Last In, First Out (LIFO)"
+            : "First In, First Out (FIFO)";
+
+    stack = [];
+    queue = [];
+    history = [];
+
+    document.getElementById("elementInput").value = "";
+    document.getElementById("capacityInput").value = "5";
 
     createButtons();
-    displayStructure();
+    displayOperation();
     showMessage("Choose an operation to begin!");
     displayHistory();
 }
 
-// Return to the home page
-function goHome() {
-
-    document.getElementById("operationPage").classList.add("hidden");
-    document.getElementById("homePage").classList.remove("hidden");
-}
-
-// Create buttons based on the selected structure
-function createButtons() {
-
-    let buttons = "";
-
-    if (currentType === "stack") {
-
-        buttons = `
-            <button onclick="pushElement()">➕ Push</button>
-            <button onclick="popElement()">➖ Pop</button>
-            <button onclick="peekElement()">👀 Peek</button>
-            <button onclick="displayOperation()">📋 Display</button>
-            <button onclick="checkEmpty()">❓ Is Empty?</button>
-            <button onclick="checkFull()">🔒 Is Full?</button>
-            <button onclick="showSize()">📏 Size</button>
-        `;
-
-    } else {
-
-        buttons = `
-            <button onclick="enqueueElement()">➕ Enqueue</button>
-            <button onclick="dequeueElement()">➖ Dequeue</button>
-            <button onclick="frontElement()">👀 Front</button>
-            <button onclick="displayOperation()">📋 Display</button>
-            <button onclick="checkEmpty()">❓ Is Empty?</button>
-            <button onclick="checkFull()">🔒 Is Full?</button>
-            <button onclick="showSize()">📏 Size</button>
-        `;
-    }
-
-    document.getElementById("operationButtons").innerHTML = buttons;
-}
-
-// Get the selected structure
 function getData() {
     return currentType === "stack" ? stack : queue;
 }
 
-// Read the maximum capacity
 function getCapacity() {
+    const input = document.getElementById("capacityInput");
+    const capacity = Number(input.value);
 
-    let capacity = Number(document.getElementById("capacityInput").value);
+    if (
+        input.value.trim() === "" ||
+        !Number.isInteger(capacity) ||
+        capacity < 1 ||
+        capacity > 20
+    ) {
+        showMessage("Enter a maximum capacity between 1 and 20.");
+        return null;
+    }
 
-    if (!Number.isInteger(capacity) || capacity < 1 || capacity > 20) {
-        showMessage("⚠️ Capacity must be between 1 and 20.");
-        return 0;
+    if (getData().length > capacity) {
+        showMessage(
+            "Current elements exceed this capacity. Increase the capacity or remove elements first."
+        );
+        return null;
     }
 
     return capacity;
 }
 
-// Read and validate an element
 function getInputValue() {
+    const input = document.getElementById("elementInput");
 
-    let input = document.getElementById("elementInput").value.trim();
-
-    if (input === "") {
-        showMessage("⚠️ Please enter an element first.");
+    if (input.value.trim() === "") {
+        showMessage("Please enter a number first!");
+        input.focus();
         return null;
     }
 
-    return input;
+    const value = Number(input.value);
+
+    if (!Number.isFinite(value)) {
+        showMessage("Please enter a valid number.");
+        return null;
+    }
+
+    return value;
 }
 
-// Push into Stack
-function pushElement() {
+// ======================================
+// CREATE OPERATION BUTTONS
+// ======================================
 
-    let value = getInputValue();
+function createButtons() {
+    const container = document.getElementById("operationButtons");
+    container.innerHTML = "";
+
+    let operations;
+
+    if (currentType === "stack") {
+        operations = [
+            ["Push", pushElement],
+            ["Pop", popElement],
+            ["Peek", peekElement],
+            ["Display", displayOperation],
+            ["Is Empty", checkEmpty],
+            ["Is Full", checkFull],
+            ["Size", showSize]
+        ];
+    } else {
+        operations = [
+            ["Enqueue", enqueueElement],
+            ["Dequeue", dequeueElement],
+            ["Front", frontElement],
+            ["Display", displayOperation],
+            ["Is Empty", checkEmpty],
+            ["Is Full", checkFull],
+            ["Size", showSize]
+        ];
+    }
+
+    operations.forEach(function (operation) {
+        const button = document.createElement("button");
+
+        button.textContent = operation[0];
+        button.type = "button";
+        button.addEventListener("click", operation[1]);
+
+        container.appendChild(button);
+    });
+}
+
+// ======================================
+// STACK OPERATIONS
+// ======================================
+
+function pushElement() {
+    const capacity = getCapacity();
+
+    if (capacity === null) return;
+
+    const value = getInputValue();
 
     if (value === null) return;
 
-    let capacity = getCapacity();
-
-    if (capacity === 0) return;
-
     if (stack.length >= capacity) {
-        showMessage("🚨 Stack Overflow! The stack is full.");
+        showMessage("Stack Overflow! The Stack is full.");
         addHistory("Push failed: Stack Overflow");
         return;
     }
 
     stack.push(value);
 
+    showMessage(value + " pushed onto the Stack.");
+    addHistory("Push: " + value);
+    displayOperation();
+
     document.getElementById("elementInput").value = "";
-
-    showMessage("✅ " + value + " pushed onto the stack.");
-
-    addHistory("Push " + value);
-    displayStructure();
 }
 
-// Pop from Stack
 function popElement() {
-
     if (stack.length === 0) {
-        showMessage("🚨 Stack Underflow! The stack is empty.");
+        showMessage("Stack Underflow! The Stack is empty.");
         addHistory("Pop failed: Stack Underflow");
         return;
     }
 
-    let removed = stack.pop();
+    const removed = stack.pop();
 
-    showMessage("✅ " + removed + " popped from the stack.");
-
-    addHistory("Pop " + removed);
-    displayStructure();
+    showMessage(removed + " popped from the Stack.");
+    addHistory("Pop: " + removed);
+    displayOperation();
 }
 
-// Peek at Stack
 function peekElement() {
-
     if (stack.length === 0) {
-        showMessage("⚠️ Stack is empty. Nothing to peek.");
+        showMessage("The Stack is empty!");
         return;
     }
 
-    showMessage("👀 Top element: " + stack[stack.length - 1]);
-
+    showMessage("Top element: " + stack[stack.length - 1]);
     addHistory("Peek: " + stack[stack.length - 1]);
 }
 
-// Enqueue into Queue
-function enqueueElement() {
+// ======================================
+// QUEUE OPERATIONS
+// ======================================
 
-    let value = getInputValue();
+function enqueueElement() {
+    const capacity = getCapacity();
+
+    if (capacity === null) return;
+
+    const value = getInputValue();
 
     if (value === null) return;
 
-    let capacity = getCapacity();
-
-    if (capacity === 0) return;
-
     if (queue.length >= capacity) {
-        showMessage("🚨 Queue Overflow! The queue is full.");
+        showMessage("Queue Overflow! The Queue is full.");
         addHistory("Enqueue failed: Queue Overflow");
         return;
     }
 
     queue.push(value);
 
+    showMessage(value + " added to the rear of the Queue.");
+    addHistory("Enqueue: " + value);
+    displayOperation();
+
     document.getElementById("elementInput").value = "";
-
-    showMessage("✅ " + value + " added to the rear of the queue.");
-
-    addHistory("Enqueue " + value);
-    displayStructure();
 }
 
-// Dequeue from Queue
 function dequeueElement() {
-
     if (queue.length === 0) {
-        showMessage("🚨 Queue Underflow! The queue is empty.");
+        showMessage("Queue Underflow! The Queue is empty.");
         addHistory("Dequeue failed: Queue Underflow");
         return;
     }
 
-    let removed = queue.shift();
+    const removed = queue.shift();
 
-    showMessage("✅ " + removed + " removed from the front of the queue.");
-
-    addHistory("Dequeue " + removed);
-    displayStructure();
+    showMessage(removed + " removed from the front of the Queue.");
+    addHistory("Dequeue: " + removed);
+    displayOperation();
 }
 
-// View Queue Front
 function frontElement() {
-
     if (queue.length === 0) {
-        showMessage("⚠️ Queue is empty. No front element.");
+        showMessage("The Queue is empty!");
         return;
     }
 
-    showMessage("👀 Front element: " + queue[0]);
-
+    showMessage("Front element: " + queue[0]);
     addHistory("Front: " + queue[0]);
 }
 
-// Display current structure
-function displayStructure() {
+// ======================================
+// DISPLAY STRUCTURE
+// ======================================
 
-    let data = getData();
-    let display = "";
+function displayOperation() {
+    const container = document.getElementById("structureDisplay");
+    container.innerHTML = "";
 
-    data.forEach(function(value, index) {
-
-        if (currentType === "stack") {
-
-            display =
-                `<div class="data-item">
-                    ${escapeHTML(value)}
-                    ${index === data.length - 1 ? "<br>⬆ TOP" : ""}
-                </div>` + display;
-
-        } else {
-
-            display +=
-                `<div class="data-item queue-item">
-                    ${index === 0 ? "FRONT<br>" : ""}
-                    ${escapeHTML(value)}
-                    ${index === data.length - 1 ? "<br>REAR" : ""}
-                </div>`;
-        }
-    });
+    const data = getData();
 
     if (data.length === 0) {
-        display = "<p>No elements yet. Add an element to begin!</p>";
+        container.textContent = "No elements yet.";
+        return;
     }
 
-    document.getElementById("structureDisplay").innerHTML = display;
+    if (currentType === "stack") {
+        const topLabel = document.createElement("p");
+        topLabel.textContent = "TOP ↓";
+        topLabel.style.width = "100%";
+        topLabel.style.textAlign = "center";
+        topLabel.style.color = "#00e5ff";
+        topLabel.style.fontWeight = "bold";
+
+        container.appendChild(topLabel);
+
+        for (let i = data.length - 1; i >= 0; i--) {
+            const item = document.createElement("div");
+
+            item.className = "data-item";
+            item.textContent = data[i];
+
+            if (i === data.length - 1) {
+                item.textContent += "  ← TOP";
+            }
+
+            container.appendChild(item);
+        }
+    } else {
+        const frontLabel = document.createElement("p");
+        frontLabel.textContent = "FRONT →";
+        frontLabel.style.color = "#00e5ff";
+        frontLabel.style.fontWeight = "bold";
+
+        container.appendChild(frontLabel);
+
+        data.forEach(function (value, index) {
+            const item = document.createElement("div");
+
+            item.className = "queue-item";
+            item.textContent = value;
+
+            if (index === 0) {
+                item.textContent += " (FRONT)";
+            }
+
+            if (index === data.length - 1) {
+                item.textContent += " (REAR)";
+            }
+
+            container.appendChild(item);
+        });
+    }
 }
 
-// Display operation message
+// ======================================
+// STATUS AND HISTORY
+// ======================================
+
 function showMessage(message) {
-    document.getElementById("statusMessage").innerText = message;
+    document.getElementById("statusMessage").textContent = message;
 }
 
-// Add to history
 function addHistory(message) {
-
     history.unshift(message);
-
     displayHistory();
 }
 
-// Display operation history
 function displayHistory() {
+    const list = document.getElementById("historyList");
+    list.innerHTML = "";
 
-    let list = "";
-
-    history.forEach(function(item) {
-        list += "<li>" + escapeHTML(item) + "</li>";
+    history.forEach(function (message) {
+        const item = document.createElement("li");
+        item.textContent = message;
+        list.appendChild(item);
     });
-
-    if (history.length === 0) {
-        list = "<li>No operations performed yet.</li>";
-    }
-
-    document.getElementById("historyList").innerHTML = list;
 }
 
-// Check if empty
 function checkEmpty() {
+    const empty = getData().length === 0;
 
-    let data = getData();
-    let result = data.length === 0;
+    showMessage(
+        empty ? "Yes, the structure is empty." : "No, the structure is not empty."
+    );
 
-    showMessage(result ? "✅ Yes, it is empty." : "❌ No, it is not empty.");
-
-    addHistory("Is Empty? " + (result ? "Yes" : "No"));
+    addHistory("Is Empty: " + (empty ? "Yes" : "No"));
 }
 
-// Check if full
 function checkFull() {
+    const capacity = getCapacity();
 
-    let capacity = getCapacity();
+    if (capacity === null) return;
 
-    if (capacity === 0) return;
+    const full = getData().length >= capacity;
 
-    let result = getData().length >= capacity;
+    showMessage(
+        full ? "Yes, the structure is full." : "No, the structure is not full."
+    );
 
-    showMessage(result ? "🔒 Yes, it is full." : "✅ No, it is not full.");
-
-    addHistory("Is Full? " + (result ? "Yes" : "No"));
+    addHistory("Is Full: " + (full ? "Yes" : "No"));
 }
 
-// Show current size
 function showSize() {
+    const size = getData().length;
 
-    let size = getData().length;
-
-    showMessage("📏 Current size: " + size);
-
+    showMessage("Current size: " + size);
     addHistory("Size: " + size);
 }
 
-// Display operation
-function displayOperation() {
-
-    displayStructure();
-
-    showMessage("📋 Displayed all current elements.");
-
-    addHistory("Display elements");
-}
-
-// Reset current structure
 function resetStructure() {
-
-    if (currentType === "stack") {
-        stack = [];
-    } else {
-        queue = [];
-    }
-
+    stack = [];
+    queue = [];
     history = [];
 
-    document.getElementById("elementInput").value = "";
-
-    displayStructure();
+    displayOperation();
     displayHistory();
 
-    showMessage("🔄 Structure reset successfully!");
+    showMessage("Structure reset successfully!");
 }
 
-// Safely display user-entered text
-function escapeHTML(value) {
+// ======================================
+// QUIZ QUESTIONS
+// ======================================
 
-    return String(value).replace(/[&<>"']/g, function(character) {
+const quizQuestions = [
+    {
+        question: "Which principle does a Stack follow?",
+        options: ["FIFO", "LIFO", "Random order", "Alphabetical order"],
+        answer: 1,
+        explanation: "Stack follows LIFO: Last In, First Out."
+    },
+    {
+        question: "Which principle does a Queue follow?",
+        options: ["LIFO", "Random order", "FIFO", "Priority only"],
+        answer: 2,
+        explanation: "Queue follows FIFO: First In, First Out."
+    },
+    {
+        question: "Which Stack operation inserts an element?",
+        options: ["Pop", "Peek", "Dequeue", "Push"],
+        answer: 3,
+        explanation: "Push inserts a new element onto the Stack."
+    },
+    {
+        question: "Which Stack operation removes the top element?",
+        options: ["Push", "Pop", "Peek", "Front"],
+        answer: 1,
+        explanation: "Pop removes the top element from a Stack."
+    },
+    {
+        question: "Where is a new element inserted in a Queue?",
+        options: ["Front", "Middle", "Rear", "Top"],
+        answer: 2,
+        explanation: "Enqueue inserts a new element at the rear."
+    },
+    {
+        question: "Which Queue operation removes an element?",
+        options: ["Push", "Peek", "Enqueue", "Dequeue"],
+        answer: 3,
+        explanation: "Dequeue removes an element from the front."
+    },
+    {
+        question: "What is Stack Overflow?",
+        options: [
+            "Removing from an empty Stack",
+            "Inserting into a full Stack",
+            "Viewing the top element",
+            "Displaying all elements"
+        ],
+        answer: 1,
+        explanation: "Stack Overflow occurs when insertion is attempted on a full Stack."
+    },
+    {
+        question: "What is Stack Underflow?",
+        options: [
+            "Inserting into a full Stack",
+            "Displaying a Stack",
+            "Removing from an empty Stack",
+            "Checking the Stack size"
+        ],
+        answer: 2,
+        explanation: "Stack Underflow occurs when removal is attempted on an empty Stack."
+    },
+    {
+        question: "What is the time complexity of Push in a typical Stack implementation?",
+        options: ["O(n)", "O(log n)", "O(n²)", "O(1)"],
+        answer: 3,
+        explanation: "Push normally takes O(1) time when capacity is available."
+    },
+    {
+        question: "Which data structure is commonly used to manage function calls?",
+        options: ["Stack", "Queue only", "Graph only", "Array sorting"],
+        answer: 0,
+        explanation: "Function calls are commonly managed using a call stack."
+    }
+];
 
-        const replacements = {
-            "&": "&amp;",
-            "<": "&lt;",
-            ">": "&gt;",
-            '"': "&quot;",
-            "'": "&#39;"
-        };
+let currentQuestion = 0;
+let quizScore = 0;
+let quizAnswered = false;
 
-        return replacements[character];
+// ======================================
+// START OR RESTART QUIZ
+// ======================================
+
+function startQuiz() {
+    currentQuestion = 0;
+    quizScore = 0;
+    quizAnswered = false;
+
+    document.getElementById("quizResult").classList.add("hidden");
+    document.querySelector(".quiz-panel").classList.remove("hidden");
+
+    document.getElementById("currentScore").textContent = "Score: 0";
+
+    showQuestion();
+}
+
+// ======================================
+// SHOW QUESTION
+// ======================================
+
+function showQuestion() {
+    quizAnswered = false;
+
+    const question = quizQuestions[currentQuestion];
+
+    document.getElementById("questionCounter").textContent =
+        "Question " + (currentQuestion + 1) +
+        " of " + quizQuestions.length;
+
+    document.getElementById("currentScore").textContent =
+        "Score: " + quizScore;
+
+    document.getElementById("questionText").textContent =
+        question.question;
+
+    document.getElementById("quizFeedback").textContent = "";
+
+    document.getElementById("nextQuestionButton").classList.add("hidden");
+
+    document.getElementById("quizProgress").style.width =
+        ((currentQuestion + 1) / quizQuestions.length * 100) + "%";
+
+    const optionsContainer = document.getElementById("answerOptions");
+    optionsContainer.innerHTML = "";
+
+    question.options.forEach(function (option, index) {
+        const button = document.createElement("button");
+
+        button.className = "answer-option";
+        button.textContent = option;
+        button.type = "button";
+
+        button.addEventListener("click", function () {
+            checkAnswer(index);
+        });
+
+        optionsContainer.appendChild(button);
     });
+}
+
+// ======================================
+// CHECK ANSWER
+// ======================================
+
+function checkAnswer(selectedIndex) {
+    if (quizAnswered) return;
+
+    quizAnswered = true;
+
+    const question = quizQuestions[currentQuestion];
+    const buttons = document.querySelectorAll(".answer-option");
+    const feedback = document.getElementById("quizFeedback");
+
+    buttons.forEach(function (button) {
+        button.disabled = true;
+    });
+
+    if (selectedIndex === question.answer) {
+        quizScore++;
+
+        buttons[selectedIndex].classList.add("correct-answer");
+
+        feedback.textContent = "✅ Correct! " + question.explanation;
+    } else {
+        buttons[selectedIndex].classList.add("wrong-answer");
+        buttons[question.answer].classList.add("correct-answer");
+
+        feedback.textContent = "❌ Not quite! " + question.explanation;
+    }
+
+    document.getElementById("currentScore").textContent =
+        "Score: " + quizScore;
+
+    const nextButton = document.getElementById("nextQuestionButton");
+
+    nextButton.textContent =
+        currentQuestion === quizQuestions.length - 1
+            ? "View Results 🏆"
+            : "Next Question →";
+
+    nextButton.classList.remove("hidden");
+}
+
+// ======================================
+// NEXT QUESTION
+// ======================================
+
+function nextQuestion() {
+    if (!quizAnswered) return;
+
+    currentQuestion++;
+
+    if (currentQuestion < quizQuestions.length) {
+        showQuestion();
+    } else {
+        showQuizResult();
+    }
+}
+
+// ======================================
+// FINAL QUIZ RESULT
+// ======================================
+
+function showQuizResult() {
+    document.querySelector(".quiz-panel").classList.add("hidden");
+
+    const result = document.getElementById("quizResult");
+    result.classList.remove("hidden");
+
+    document.getElementById("finalScore").textContent =
+        "Your Score: " + quizScore + " / " + quizQuestions.length;
+
+    let message;
+
+    if (quizScore === 10) {
+        message = "🌟 Perfect score! You are a DSA champion!";
+    } else if (quizScore >= 8) {
+        message = "🎉 Excellent work! You understand these concepts well.";
+    } else if (quizScore >= 5) {
+        message = "👍 Good effort! Review Learn Mode and try again.";
+    } else {
+        message = "💪 Keep practising! Learn Mode will help you improve.";
+    }
+
+    document.getElementById("finalMessage").textContent = message;
 }
