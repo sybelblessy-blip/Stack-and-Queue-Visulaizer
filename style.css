@@ -1,0 +1,282 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #667eea, #764ba2, #f093fb);
+    color: #333;
+}
+
+header {
+    text-align: center;
+    color: white;
+    padding: 20px 10px;
+}
+
+header h1 {
+    font-size: 36px;
+    margin-bottom: 8px;
+}
+
+header p {
+    font-size: 17px;
+}
+
+main,
+#operationPage {
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 25px;
+    background: rgba(255, 255, 255, 0.96);
+    border-radius: 24px;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
+}
+
+main > h2 {
+    text-align: center;
+    color: #6d28d9;
+    margin-bottom: 30px;
+}
+
+.card-container {
+    display: flex;
+    gap: 25px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.card {
+    flex: 1;
+    min-width: 230px;
+    padding: 30px 20px;
+    text-align: center;
+    border-radius: 20px;
+    transition: 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-6px);
+}
+
+.stack-card {
+    background: linear-gradient(135deg, #ede9fe, #ddd6fe);
+    border: 2px solid #a78bfa;
+}
+
+.queue-card {
+    background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+    border: 2px solid #60a5fa;
+}
+
+.icon {
+    font-size: 55px;
+}
+
+.card h2 {
+    font-size: 28px;
+}
+
+.stack-card h2 {
+    color: #6d28d9;
+}
+
+.queue-card h2 {
+    color: #1d4ed8;
+}
+
+.card p {
+    font-size: 16px;
+    margin-bottom: 25px;
+}
+
+button {
+    padding: 12px 18px;
+    margin: 6px 3px;
+    border: none;
+    border-radius: 12px;
+    color: white;
+    background: linear-gradient(135deg, #7c3aed, #ec4899);
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.2);
+}
+
+.queue-card button {
+    background: linear-gradient(135deg, #2563eb, #06b6d4);
+}
+
+.hidden {
+    display: none !important;
+}
+
+.back-button {
+    background: #475569;
+}
+
+#operationTitle {
+    text-align: center;
+    font-size: 30px;
+    color: #6d28d9;
+}
+
+#operationDescription {
+    text-align: center;
+    color: #64748b;
+}
+
+.operation-panel,
+.visual-panel,
+.history-panel {
+    margin-top: 22px;
+    padding: 20px;
+    border-radius: 18px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+}
+
+label {
+    display: block;
+    margin-top: 12px;
+    margin-bottom: 6px;
+    font-weight: bold;
+    color: #4c1d95;
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #ddd6fe;
+    border-radius: 10px;
+    font-size: 16px;
+    background: white;
+}
+
+input:focus {
+    outline: none;
+    border-color: #7c3aed;
+}
+
+#operationButtons {
+    margin-top: 15px;
+    text-align: center;
+}
+
+.visual-panel h3,
+.history-panel h3 {
+    color: #4c1d95;
+}
+
+#structureDisplay {
+    min-height: 100px;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.data-item {
+    min-width: 65px;
+    padding: 15px 12px;
+    text-align: center;
+    border-radius: 12px;
+    color: white;
+    font-size: 19px;
+    font-weight: bold;
+    background: linear-gradient(135deg, #8b5cf6, #ec4899);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    animation: appear 0.3s ease;
+}
+
+.queue-item {
+    background: linear-gradient(135deg, #2563eb, #06b6d4);
+}
+
+#statusMessage {
+    padding: 12px;
+    text-align: center;
+    background: #ede9fe;
+    color: #5b21b6;
+    border-radius: 10px;
+    font-weight: bold;
+}
+
+#historyList {
+    padding-left: 25px;
+}
+
+#historyList li {
+    padding: 8px;
+    margin: 5px 0;
+    background: white;
+    border-left: 4px solid #8b5cf6;
+    border-radius: 6px;
+    overflow-wrap: anywhere;
+}
+
+.reset-button {
+    display: block;
+    margin: 20px auto 0;
+    background: linear-gradient(135deg, #ef4444, #f97316);
+}
+
+@keyframes appear {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@media (max-width: 600px) {
+    body {
+        padding: 10px;
+    }
+
+    header h1 {
+        font-size: 28px;
+    }
+
+    main,
+    #operationPage {
+        padding: 18px;
+    }
+
+    .card-container {
+        flex-direction: column;
+    }
+
+    .card {
+        min-width: 0;
+    }
+
+    #operationButtons button {
+        width: 100%;
+        margin: 6px 0;
+    }
+
+    #structureDisplay {
+        gap: 5px;
+        padding: 8px;
+    }
+
+    .data-item {
+        min-width: 48px;
+        padding: 12px 8px;
+    }
+}
