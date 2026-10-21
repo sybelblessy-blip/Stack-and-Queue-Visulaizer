@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>DSA Explorer</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header>
+        <h1>🎓 DSA Explorer</h1>
+        <p>Learn. Visualize. Explore.</p>
+    </header>
+
+    <main id="homePage">
+
+        <h2>Choose Your Data Structure</h2>
+
+        <div class="card-container">
+
+            <div class="card stack-card">
+                <div class="icon">📚</div>
+                <h2>STACK</h2>
+                <p>Last In, First Out (LIFO)</p>
+
+                <button onclick="openSection('stack')">
+                    Explore Stack →
+                </button>
+            </div>
+
+            <div class="card queue-card">
+                <div class="icon">🚶</div>
+                <h2>QUEUE</h2>
+                <p>First In, First Out (FIFO)</p>
+
+                <button onclick="openSection('queue')">
+                    Explore Queue →
+                </button>
+            </div>
+
+        </div>
+
+    </main>
+
+    <section id="operationPage" class="hidden">
+
+        <button class="back-button" onclick="goHome()">
+            ← Back to Home
+        </button>
+
+        <h2 id="operationTitle"></h2>
+        <p id="operationDescription"></p>
+
+        <div class="operation-panel">
+
+            <label for="elementInput">Enter an element</label>
+
+            <input
+                type="number"
+                id="elementInput"
+                placeholder="Enter a number"
+            >
+
+            <label for="capacityInput">Maximum capacity</label>
+
+            <input
+                type="number"
+                id="capacityInput"
+                value="5"
+                min="1"
+                max="20"
+            >
+
+            <div id="operationButtons"></div>
+
+        </div>
+
+        <div class="visual-panel">
+            <h3>✨ Visual Representation</h3>
+            <div id="structureDisplay"></div>
+            <p id="statusMessage">Choose an operation to begin!</p>
+        </div>
+
+        <div class="history-panel">
+            <h3>📜 Operation History</h3>
+            <ul id="historyList"></ul>
+        </div>
+
+        <button class="reset-button" onclick="resetStructure()">
+            🔄 Reset Structure
+        </button>
+
+    </section>
+
+    <script src="script.js"></script>
+
+</body>
+</html>
